@@ -60,6 +60,8 @@ class ExcelOptionsFrame(ttk.Frame):
         )
         self.sheet_dropdown.pack(pady=5)
 
+        skip_rows_label = ttk.Label(self, text="Skip rows:")
+        skip_rows_label.pack(pady=5)
         self.skiprows_var = IntVar(value=0)
         self.skiprows_selector = ttk.Entry(self, textvariable=self.skiprows_var)
         self.skiprows_selector.pack(pady=5)
@@ -199,6 +201,13 @@ class DataImportPopup(Toplevel):
                 return
         elif self.filepath.endswith(".xlsx"):
             try:
+                try:
+                    self.import_options_frame.get_skiprows()
+                except Exception as e:
+                    ttk.dialogs.dialogs.Messagebox.show_error(
+                        "Skip rows must be a number."
+                    )
+                    return
                 df = pd.read_excel(
                     self.filepath,
                     sheet_name=self.import_options_frame.get_sheet_name(),
