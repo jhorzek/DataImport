@@ -183,8 +183,8 @@ class DataImportPopup(Toplevel):
         # Tableview for data preview
         self.preview_tableview = Tableview(
             self.right_frame,
-            paginated=False,
-            searchable=True,
+            paginated=True,
+            pagesize=25,
             autofit=True,
             coldata=[],
             rowdata=[],
