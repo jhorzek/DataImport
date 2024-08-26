@@ -39,12 +39,13 @@ class DataImportApp:
 
     def open_import_window(self):
         data_frame = DataImport.import_data(self.root)
-        coldata = list(data_frame.columns)
-        rowdata = data_frame.values.tolist()
-        self.tableview.build_table_data(
-            coldata=coldata,
-            rowdata=rowdata,
-        )
+        if data_frame is not None:
+            coldata = list(data_frame.columns)
+            rowdata = data_frame.values.tolist()
+            self.tableview.build_table_data(
+                coldata=coldata,
+                rowdata=rowdata,
+            )
 
 
 if __name__ == "__main__":

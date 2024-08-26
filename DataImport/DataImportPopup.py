@@ -153,9 +153,15 @@ class DataImportPopup(Toplevel):
             ("SPSS files", "*.sav"),
             ("All files", "*.*"),
         )
-        self.filepath = filedialog.askopenfilename(
-            title="Select a file", filetypes=filetypes
+        current_filepath = filedialog.askopenfilename(
+            title="Select a file", filetypes=filetypes, parent=self
         )
+
+        # only update the file path if a file was selected
+        if current_filepath == "":
+            return
+        else:
+            self.filepath = current_filepath
 
         # show the options for this file type
         if self.import_options_frame is not None:
@@ -185,6 +191,12 @@ class DataImportPopup(Toplevel):
         elif self.filepath.endswith(".sav"):
             self.import_options_frame = SPSSOptionsFrame(self.left_frame)
             self.import_options_frame.pack(pady=5)
+        else:
+            ttk.dialogs.dialogs.Messagebox.show_error(
+                "Selected file must be one of the following file types: csv, xlsx, .sav.",
+                parent=self,
+            )
+            return
 
         self.__import_preview_data()
 
