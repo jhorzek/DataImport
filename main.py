@@ -6,7 +6,7 @@ import DataImport
 
 
 class DataImportApp:
-    def __init__(self, root):
+    def __init__(self, root: ttk.Window):
         self.root = root
         self.root.title("Data Import")
         self.data_frame = None

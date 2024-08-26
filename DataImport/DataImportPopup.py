@@ -5,14 +5,27 @@ from tkinter import filedialog, StringVar, IntVar, Toplevel, LabelFrame
 from ttkbootstrap.tableview import Tableview
 
 
-def import_data(root) -> pd.DataFrame:
+def import_data(root: ttk.Window) -> pd.DataFrame | None:
+    """Import data is the main interface for using DataImportPopup. It creates a popup window that allows the user to select a file and import it into a pandas DataFrame.
+
+    Args:
+        root (ttk.Window): The root window for the application.
+
+    Returns:
+        pd.DataFrame: If the import was successful, a pandas DataFrame is returned. Otherwise, None is returned.
+    """
     popup = DataImportPopup(root)
     data_frame = popup.show()
     return data_frame
 
 
 class CSVOptionsFrame(ttk.Frame):
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent: ttk.Frame, *args, **kwargs):
+        """Initialize a frame for CSV import options. This will allow the user to specify the separator in the csv files and the missing values encoding.
+
+        Args:
+            parent (ttk.Frame): parent frame
+        """
         super().__init__(parent, *args, **kwargs)
 
         # Separator options for CSV
@@ -38,17 +51,33 @@ class CSVOptionsFrame(ttk.Frame):
         )
         self.missing_values_entry.pack(pady=5)
 
-    def get_separator(self):
+    def get_separator(self) -> str:
+        """Return the user selected separator for the csv file.
+
+        Returns:
+            str: separator selected by the user
+        """
         return self.separator_options[self.separator_var.get()]
 
-    def get_na_value(self):
+    def get_na_value(self) -> str:
+        """Return the user selected NA value (e.g., -999, NaN) for the csv file.
+
+        Returns:
+            str: The NA value selected by the user
+        """
         if self.missing_values_var.get() == "Default":
             return None
         return self.missing_values_var.get()
 
 
 class ExcelOptionsFrame(ttk.Frame):
-    def __init__(self, parent, sheet_names: list[str], *args, **kwargs):
+    def __init__(self, parent: ttk.Frame, sheet_names: list[str], *args, **kwargs):
+        """Initialize a frame for Excel import options. This will allow the user to specify the sheet name, skip rows, and missing values encoding.
+
+        Args:
+            parent (ttk.Frame): parent frame
+            sheet_names (list[str]): the names of the sheets in the excel file
+        """
         super().__init__(parent, *args, **kwargs)
 
         # Sheet selector
@@ -76,25 +105,50 @@ class ExcelOptionsFrame(ttk.Frame):
         )
         self.missing_values_entry.pack(pady=5)
 
-    def get_sheet_name(self):
+    def get_sheet_name(self) -> str:
+        """Returns the name of the sheet that the user selected.
+
+        Returns:
+            str: sheet name
+        """
         return self.sheet_var.get()
 
-    def get_skiprows(self):
+    def get_skiprows(self) -> int:
+        """Return the number of rows that should be skipped
+
+        Returns:
+            int: number of rows to skip
+        """
         return self.skiprows_var.get()
 
-    def get_na_value(self):
+    def get_na_value(self) -> str:
+        """The missing values encoding that the user selected.
+
+        Returns:
+            str: missing values encoding
+        """
         if self.missing_values_var.get() == "Default":
             return None
         return self.missing_values_var.get()
 
 
 class SPSSOptionsFrame(ttk.Frame):
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent: ttk.Frame, *args, **kwargs):
+        """Initialize a frame for SPSS import options. Currently, no specific settings are supported for SPSS files.
+
+        Args:
+            parent (ttk.Frame): parent frame
+        """
         super().__init__(parent, *args, **kwargs)
 
 
 class DataImportPopup(Toplevel):
-    def __init__(self, root):
+    def __init__(self, root: ttk.Window):
+        """Initialize the DataImportPopup window. This window allows the user to select a file and import it into a pandas DataFrame.
+
+        Args:
+            root (ttk.Window): parent window
+        """
         super().__init__(root)
         self.root = root
         self.title("Select Dataset")
@@ -139,13 +193,19 @@ class DataImportPopup(Toplevel):
 
         self.import_btn = None
 
-    def show(self):
+    def show(self) -> pd.DataFrame:
+        """show the actual window. This function mainly ensures that other windows are waiting for the data import window to close and return the data.
+
+        Returns:
+            pd.DataFrame: imported data set
+        """
         self.deiconify()
         self.wm_protocol("WM_DELETE_WINDOW", self.destroy)
         self.wait_window(self)
         return self.data_frame
 
-    def __select_file(self):
+    def __select_file(self) -> None:
+        """open actual file selector and show the import options for the selected file type."""
         # File selector
         filetypes = (
             ("CSV files", "*.csv"),
@@ -200,7 +260,8 @@ class DataImportPopup(Toplevel):
 
         self.__import_preview_data()
 
-    def __import_preview_data(self):
+    def __import_preview_data(self) -> None:
+        """Imports the data with the selected import options for the specific data file and shows a preview in the tableview."""
         # Load the selected file based on type and separator
         if self.filepath.endswith(".csv"):
             try:
@@ -261,7 +322,12 @@ class DataImportPopup(Toplevel):
         )
         self.import_btn.pack(pady=20)
 
-    def __return_data(self, data_frame):
+    def __return_data(self, data_frame: pd.DataFrame) -> None:
+        """destroy the window and return the data to the main window.
+
+        Args:
+            data_frame (pd.DataFrame): imported data set
+        """
         # Return the data to the main window
         self.data_frame = data_frame
         self.destroy()
