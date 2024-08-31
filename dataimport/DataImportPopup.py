@@ -206,11 +206,11 @@ class DataImportPopup(Toplevel):
         self.wait_window(self)
         # try to get the name of the file
         try:
-            filename = re.search(".*[\/\\]([^\/^\\]+)\.[a-zA-Z]+", self.filepath).group(
-                1
-            )
+            # https://stackoverflow.com/questions/9363145/regex-for-extracting-filename-from-path
+            filename = re.search("[ \w-]+?(?=\.)", self.filepath).group(0)
         except:
             filename = None
+        print(filename)
         return {"data_frame": self.data_frame, "data_name": filename}
 
     def __select_file(self) -> None:
