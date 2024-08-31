@@ -2,7 +2,7 @@ import pandas as pd
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from ttkbootstrap.tableview import Tableview
-import DataImport
+import dataimport
 
 
 class DataImportApp:
@@ -38,7 +38,7 @@ class DataImportApp:
         self.tableview.pack(fill=BOTH, expand=True)
 
     def open_import_window(self):
-        data_frame = DataImport.import_data(self.root)
+        data_frame = dataimport.import_data(self.root)
         if data_frame is not None:
             coldata = list(data_frame.columns)
             rowdata = data_frame.values.tolist()
