@@ -38,7 +38,7 @@ class DataImportApp:
         self.tableview.pack(fill=BOTH, expand=True)
 
     def open_import_window(self):
-        data_frame = dataimport.import_data(self.root)
+        data_frame = dataimport.import_data(self.root)["data_frame"]
         if data_frame is not None:
             coldata = list(data_frame.columns)
             rowdata = data_frame.values.tolist()

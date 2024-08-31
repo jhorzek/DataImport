@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import filedialog, StringVar, IntVar, Toplevel, LabelFrame
@@ -193,16 +194,24 @@ class DataImportPopup(Toplevel):
 
         self.import_btn = None
 
-    def show(self) -> pd.DataFrame:
+    def show(self) -> dict[str, pd.DataFrame | str | None]:
         """show the actual window. This function mainly ensures that other windows are waiting for the data import window to close and return the data.
 
         Returns:
-            pd.DataFrame: imported data set
+            data_frame (pd.DataFrame): imported data set
+            data_name (str): name of the data file
         """
         self.deiconify()
         self.wm_protocol("WM_DELETE_WINDOW", self.destroy)
         self.wait_window(self)
-        return self.data_frame
+        # try to get the name of the file
+        try:
+            filename = re.search(".*[\/\\]([^\/^\\]+)\.[a-zA-Z]+", self.filepath).group(
+                1
+            )
+        except:
+            filename = None
+        return {"data_frame": self.data_frame, "data_name": filename}
 
     def __select_file(self) -> None:
         """open actual file selector and show the import options for the selected file type."""
